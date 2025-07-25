@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    :root {
+        --bg-dark: #0f0f23;
+        --accent: #667eea;
+        --glass-bg: rgba(255, 255, 255, 0.04);
+        --border-color: rgba(255, 255, 255, 0.08);
+        --text-light: #000000;
+    }
+
+    body {
+        background: var(--bg-dark);
+        color: var(--text-light);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .game-detail-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem 1rem;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--accent);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        transition: 0.2s;
+    }
+
+    .back-button:hover {
+        transform: translateX(-4px);
+        opacity: 0.8;
+    }
+
+    .timer-display {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        color: #000000;
+    }
+
+    .game-header {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        border-radius: 16px;
+        backdrop-filter: blur(12px);
+        margin-bottom: 2rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .game-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .game-type-badge {
+        display: inline-block;
+        background: var(--accent);
+        padding: 0.35rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgb(255, 255, 255);
+        margin-bottom: 0.8rem;
+    }
+
+    .game-description {
+        font-size: 1rem;
+        color: #000000;
+    }
+
+    .difficulty-indicator {
+        display: flex;
+        gap: 8px;
+        margin: 1.5rem 0 2rem;
+        justify-content: center;
+    }
+
+    .difficulty-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
+    }
+
+    .difficulty-dot.active {
+        background: var(--accent);
+    }
+
+    .challenge-section {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .challenge-label {
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
+
+    .challenge-question {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #000000;
+        margin-bottom: 2rem;
+    }
+
+    .answer-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .answer-input {
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.03);
+        color: rgb(0, 0, 0);
+        font-size: 1rem;
+    }
+
+    .submit-button {
+        background: var(--accent);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        transition: 0.2s ease;
+    }
+
+    .submit-button:hover {
+        background: #5567dd;
+    }
+
+    .completed-section {
+        text-align: center;
+    }
+
+    .completed-message {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #8fff8f;
+        margin-bottom: 1.5rem;
+    }
+
+    .play-again-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #444cf7;
+        color: white;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .play-again-button:hover {
+        background: #2e36d3;
+    }
+
+    .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 4px;
+        width: 0%;
+        background: var(--accent);
+        z-index: 1000;
+        transition: width 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .game-title { font-size: 1.5rem; }
+        .challenge-question { font-size: 1.1rem; }
+    }
+</style>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="game-detail-container">
+    <a href="{% url 'game_list' %}" class="back-button">
+        <span>←</span>
+        <span>Back to Games</span>
+    </a>
+
+    <div class="timer-display">
+        <span class="timer-icon">⏱️</span>
+        <span>Take your time</span>
+    </div>
+
+    <div class="game-header">
+        <h1 class="game-title">{{ game.title }}</h1>
+        <div class="game-type-badge {{ game.challenge_type|lower }}">
+            {{ game.get_challenge_type_display }}
+        </div>
+        <p class="game-description">{{ game.description }}</p>
+    </div>
+
+    <div class="difficulty-indicator">
+        <div class="difficulty-dot active"></div>
+        <div class="difficulty-dot active"></div>
+        <div class="difficulty-dot"></div>
+        <div class="difficulty-dot"></div>
+        <div class="difficulty-dot"></div>
+    </div>
+
+    <div class="challenge-section">
+        <div class="challenge-label">
+            <span>🎯</span>
+            <span>Your Challenge</span>
+        </div>
+        <div class="challenge-question">
+            {{ game.question }}
+        </div>
+
+        {% if already_completed %}
+            <div class="completed-section">
+                <div class="completed-message">
+                    <span class="completed-icon">🏆</span>
+                    <span>Challenge Completed!</span>
+                </div>
+                <a href="{% url 'game_list' %}" class="play-again-button">
+                    <span>🚀</span>
+                    <span>Try Another Challenge</span>
+                </a>
+            </div>
+        {% else %}
+            <form method="post" class="answer-form">
+                {% csrf_token %}
+                <input 
+                    type="text" 
+                    name="answer" 
+                    class="answer-input"
+                    placeholder="Enter your answer..." 
+                    required
+                    autocomplete="off"
+                    id="answerInput"
+                >
+                <button type="submit" class="submit-button">
+                    <span class="submit-icon">⚡</span>
+                    <span>Submit Answer</span>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Auto-fill progress bar animation
+    const progress = document.getElementById('progressBar');
+    let width = 0;
+    const interval = setInterval(() => {
+        width += 1;
+        progress.style.width = width + '%';
+        if (width >= 100) clearInterval(interval);
+    }, 20);
+</script>
+
+{% endblock %}

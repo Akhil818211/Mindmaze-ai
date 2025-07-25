@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}Brain Challenges – MindMaze{% endblock %}
+
+{% block content %}
+<style>
+    .game-list-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 1rem;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .game-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .game-header h2 {
+        font-size: 2.5rem;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .game-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .game-card {
+        background: linear-gradient(to top left, #1e1e3f, #272752);
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        color: #fff;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .game-description {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        color: #cbd5e1;
+    }
+
+    .game-type-badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        background: #4c51bf;
+        color: white;
+        padding: 0.3rem 0.75rem;
+        border-radius: 999px;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .play-button,
+    .completed-tag,
+    .pagination-button {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        margin: 0.25rem;
+    }
+
+    .play-button {
+        background: #38bdf8;
+        color: #fff;
+    }
+
+    .play-button:hover {
+        background: #0ea5e9;
+    }
+
+    .completed-tag {
+        background: #22c55e;
+        color: white;
+    }
+
+    .pagination-controls {
+        text-align: center;
+        margin-top: 2.5rem;
+    }
+
+    .pagination-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #4c51bf;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        font-weight: bold;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-button:hover {
+        background: #3730a3;
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="game-list-container">
+    <div class="game-header">
+        <h2>🧠 Brain Challenges</h2>
+        <p>Sharpen your focus and memory with fun mental games</p>
+    </div>
+
+    <div class="game-grid">
+        {% for game in page_obj %}
+        <div class="game-card">
+            <div class="game-type-badge">{{ game.get_challenge_type_display }}</div>
+            <div class="game-title">{{ game.title }}</div>
+            <div class="game-description">{{ game.description }}</div>
+
+            {% if game.id in completed_games %}
+                <span class="completed-tag">✅ Completed</span>
+            {% else %}
+                <a href="{% url 'play_game' game.id %}" class="play-button">🚀 Play Now</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Styled Pagination Controls -->
+    <div class="pagination-controls">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="pagination-button">⬅ Previous</a>
+        {% endif %}
+
+        <span style="margin: 0 1rem; font-weight: bold; color: #cbd5e1;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="pagination-button">Next ➡</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

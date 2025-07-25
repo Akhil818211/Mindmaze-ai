@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}FAQ – MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+  .faq-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, #f2f6ff, #e6ecff);
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .faq-section .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .faq-title {
+    font-size: 36px;
+    text-align: center;
+    color: #333366;
+    margin-bottom: 40px;
+  }
+
+  .accordion-item {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .accordion-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .accordion-header {
+    width: 100%;
+    padding: 18px 24px;
+    font-size: 18px;
+    background-color: #f9f9fc;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+  }
+
+  .accordion-header:hover {
+    background-color: #eef1ff;
+  }
+
+  .icon {
+    font-size: 20px;
+    color: #764ba2;
+    font-weight: bold;
+  }
+
+  .accordion-body {
+    display: none;
+    padding: 0 24px 20px;
+    background: #fff;
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .accordion-body a {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  .accordion-body a:hover {
+    color: #5a3c91;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="faq-section">
+  <div class="container">
+    <h1 class="faq-title">🙋 Frequently Asked Questions</h1>
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <button class="accordion-header">What is MindMaze? <span class="icon">+</span></button>
+        <div class="accordion-body">
+          <p>MindMaze is an AI-powered mental fitness platform offering challenges, mindfulness exercises, and progress tracking.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">Is MindMaze free to use? <span class="icon">+</span></button>
+        <div class="accordion-body">
+          <p>Yes, most features are free. However, premium content is available for members with special access.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">How do I track my mental fitness progress? <span class="icon">+</span></button>
+        <div class="accordion-body">
+          <p>Progress is tracked through your personal dashboard using our daily goal and streak tracker.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">Can I reset my streak or progress? <span class="icon">+</span></button>
+        <div class="accordion-body">
+          <p>No, streaks are continuous to promote habit building. However, you can contact support for exceptions.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">Who can I contact for support? <span class="icon">+</span></button>
+        <div class="accordion-body">
+          <p>You can <a href="{% url 'contact' %}">Contact Us</a> via the form and we’ll respond as soon as possible.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const headers = document.querySelectorAll('.accordion-header');
+    headers.forEach(header => {
+      header.addEventListener('click', () => {
+        const body = header.nextElementSibling;
+        const icon = header.querySelector('.icon');
+        const isOpen = body.style.display === 'block';
+
+        // Close all
+        document.querySelectorAll('.accordion-body').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.accordion-header .icon').forEach(i => i.textContent = '+');
+
+        // Open current
+        if (!isOpen) {
+          body.style.display = 'block';
+          icon.textContent = '–';
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

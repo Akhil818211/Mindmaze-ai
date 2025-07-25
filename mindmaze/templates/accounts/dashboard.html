@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard – MindMaze{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+        animation: fadeSlideUp 0.6s ease-in-out;
+    }
+
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        color: #cbd5e1;
+    }
+
+    .dashboard-stats {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(to bottom right, #1f1f3f, #2a2a5a);
+        padding: 1.75rem 1.5rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        text-align: center;
+        color: #fff;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-icon {
+        font-size: 2.2rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.2rem;
+        color: #a5b4fc;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #cbd5e1;
+    }
+
+    .action-section {
+        text-align: center;
+    }
+
+    .action-title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(to right, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .btn-action {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: #38bdf8;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 6px 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-action:hover {
+        background: #0ea5e9;
+        transform: scale(1.05);
+    }
+
+    .btn-action.mindfulness {
+        background: #a78bfa;
+        box-shadow: 0 6px 15px rgba(167, 139, 250, 0.3);
+    }
+
+    .btn-action.mindfulness:hover {
+        background: #8b5cf6;
+    }
+
+    .btn-icon {
+        font-size: 1.5rem;
+    }
+
+    @keyframes fadeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="welcome-header">
+        <h1 class="welcome-title">Welcome Back, {{ user.username }}!</h1>
+        <p class="welcome-subtitle">Ready to level up your mind today?</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <span class="stat-icon">🔥</span>
+            <h3 class="stat-title">Current Streak</h3>
+            <p class="stat-value">{{ streak }}</p>
+            <p class="stat-label">consecutive days</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <h3 class="stat-title">Total Completed</h3>
+            <p class="stat-value">{{ total_completed }}</p>
+            <p class="stat-label">challenges conquered</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🎖️</span>
+            <h3 class="stat-title">Current Badge</h3>
+            <p class="stat-value">{{ badge }}</p>
+            <p class="stat-label">achievement level</p>
+        </div>
+    </div>
+
+    <div class="action-section">
+        <h2 class="action-title">Choose Your Adventure</h2>
+        <div class="action-buttons">
+            <a href="{% url 'game_list' %}" class="btn-action">
+                <span class="btn-icon">🧠</span>
+                <span>Brain Games</span>
+            </a>
+            <a href="{% url 'mindfulness_list' %}" class="btn-action mindfulness">
+                <span class="btn-icon">🧘</span>
+                <span>Mindfulness</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

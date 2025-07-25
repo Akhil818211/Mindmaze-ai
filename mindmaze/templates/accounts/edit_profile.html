@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile – MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --secondary: #764ba2;
+        --bg-light: #f7f9fc;
+        --text-dark: #222;
+        --text-muted: #666;
+        --border-radius: 14px;
+        --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        background: var(--bg-light);
+    }
+
+    .edit-profile-container {
+        max-width: 880px;
+        margin: 40px auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    .back-button {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 1rem;
+    }
+
+    .progress-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 1.5rem 0;
+    }
+
+    .progress-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+    }
+
+    .progress-dot.active {
+        background: var(--primary);
+    }
+
+    .form-tips {
+        background: linear-gradient(135deg, #e0e0ff, #f0f0ff);
+        border-radius: var(--border-radius);
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+
+    .tips-title {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .tips-list {
+        padding-left: 1.2rem;
+        color: var(--text-muted);
+    }
+
+    .form-container {
+        margin-bottom: 2rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input,
+    .form-textarea {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: #fafafa;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        background-color: #fff;
+    }
+
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .input-hint {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .save-section {
+        text-align: center;
+    }
+
+    .save-button {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #fff;
+        font-weight: bold;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .save-button:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+    <a href="{% url 'profile' %}" class="back-button">← Back to Profile</a>
+
+    <div class="page-header">
+        <h1 class="page-title">✏️ Edit Profile</h1>
+        <p class="page-subtitle">Update your personal information and preferences</p>
+    </div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot active"></div>
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+    </div>
+
+    <div class="form-tips">
+        <div class="tips-title">💡 Profile Tips</div>
+        <ul class="tips-list">
+            <li>Complete your profile to unlock personalized features</li>
+            <li>Set realistic daily goals to maintain consistency</li>
+            <li>Your bio helps connect with other learners</li>
+        </ul>
+    </div>
+
+    <div class="form-container">
+        <form method="post" id="profile-form" class="profile-form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="first_name">👤 First Name</label>
+                    <input type="text" id="first_name" name="first_name" class="form-input" value="{{ user.first_name|default:'' }}" placeholder="Enter your first name">
+                    <div class="input-hint">Displayed on your profile</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="last_name">👥 Last Name</label>
+                    <input type="text" id="last_name" name="last_name" class="form-input" value="{{ user.last_name|default:'' }}" placeholder="Enter your last name">
+                    <div class="input-hint">Used for formal communication</div>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label" for="email">📧 Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" value="{{ user.email }}" placeholder="your.email@example.com" required>
+                <div class="input-hint">We'll send updates to this address</div>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label" for="bio">📝 Bio</label>
+                <textarea id="bio" name="bio" class="form-textarea" placeholder="Tell us about yourself">{{ user.bio|default:'' }}</textarea>
+                <div class="input-hint">Share your journey with the community</div>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label" for="daily_goal">🎯 Daily Goal</label>
+                <input type="text" id="daily_goal" name="daily_goal" class="form-input" value="{{ user.daily_goal|default:'' }}" placeholder="e.g., Complete 3 brain challenges">
+                <div class="input-hint">Set a realistic daily goal</div>
+            </div>
+
+            <div class="save-section">
+                <button type="submit" class="save-button">💾 Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

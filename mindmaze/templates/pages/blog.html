@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog – MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+    .blog-section {
+        padding: 60px 0;
+        background: linear-gradient(to bottom, #f9f9ff, #e0e0f8);
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 36px;
+        font-weight: bold;
+        color: #3a3a5d;
+        margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .blog-post {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .blog-post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .blog-post img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .blog-content {
+        padding: 20px;
+    }
+
+    .blog-content h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333366;
+    }
+
+    .blog-content p {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .read-more {
+        display: inline-block;
+        margin-top: 15px;
+        color: #764ba2;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .read-more:hover {
+        color: #5e3e9d;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="blog-section">
+  <div class="container">
+    <h1 class="section-title">📰 MindMaze Blog</h1>
+    <p class="section-subtitle">Insights on mental clarity, focus, and well-being.</p>
+
+    <div class="blog-grid">
+      <div class="blog-post">
+        <img src="../../static/img/Meditation-Mindfulness-1-2048x1280.jpg" alt="Mindfulness">
+        <div class="blog-content">
+          <h2>How to Practice Mindfulness in 5 Minutes a Day</h2>
+          <p>Start small and build a powerful daily habit to boost clarity and reduce stress.</p>
+          <a href="#" class="read-more">Read More →</a>
+        </div>
+      </div>
+
+      <div class="blog-post">
+        <img src="../../static/img/brain-workout.jpg" alt="Focus">
+        <div class="blog-content">
+          <h2>Train Your Focus Like a Muscle</h2>
+          <p>Discover how mental training exercises help improve sustained attention.</p>
+          <a href="#" class="read-more">Read More →</a>
+        </div>
+      </div>
+
+      <div class="blog-post">
+        <img src="../../static/img/meditation-4157199_round2_standardsizing-7f47dee543b74e3282f6604e8e9ef126.png" alt="Relaxation">
+        <div class="blog-content">
+          <h2>The Science of Relaxation and Productivity</h2>
+          <p>How taking breaks actually improves memory and cognitive function.</p>
+          <a href="#" class="read-more">Read More →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

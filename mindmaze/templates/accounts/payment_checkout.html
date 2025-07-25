@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}MindMaze – Checkout{% endblock %}
+
+{% block extra_css %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+    .checkout-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        color: white;
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .checkout-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 420px;
+        width: 100%;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .checkout-card h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .checkout-card p {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    #rzp-button {
+        background: #fff;
+        color: #764ba2;
+        border: none;
+        padding: 14px 30px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    #rzp-button:hover {
+        background: #f0f0f0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-wrapper">
+    <div class="checkout-card">
+        <h2>MindMaze Premium</h2>
+        <p>Unlock AI focus boosters, mental challenges & advanced tracking tools.</p>
+        <button id="rzp-button">Pay ₹{{ amount }}</button>
+    </div>
+</div>
+
+<script>
+    const options = {
+        "key": "{{ key_id }}",
+        "amount": "{{ payment.amount }}",  // Should be 49900 if amount is ₹499
+        "currency": "INR",
+        "name": "MindMaze",
+        "description": "Premium Access",
+        "order_id": "{{ payment.id }}",
+        "handler": function (response){
+            alert("Payment successful!");
+            window.location.href = "{% url 'payment_success' %}";
+        },
+        "prefill": {
+            "name": "{{ name }}"
+        },
+        "theme": {
+            "color": "#764ba2"
+        },
+        "method": {
+            "card": true,
+            "upi": true,
+            "netbanking": true
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function(e){
+        rzp.open();
+        e.preventDefault();
+    }
+</script>
+{% endblock %}

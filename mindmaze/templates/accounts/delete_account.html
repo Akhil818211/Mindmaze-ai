@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .delete-account-container {
+        max-width: 520px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+
+    .delete-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 24px;
+        padding: 48px 40px;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.08),
+            0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        text-align: center;
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .warning-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 32px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .warning-icon svg {
+        width: 36px;
+        height: 36px;
+        color: white;
+    }
+
+    .delete-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 16px;
+        letter-spacing: -0.025em;
+    }
+
+    .delete-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 32px;
+        line-height: 1.6;
+    }
+
+    .warning-box {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border: 1px solid #fecaca;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+        text-align: left;
+    }
+
+    .warning-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #dc2626;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .warning-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .warning-list li {
+        color: #7f1d1d;
+        font-size: 14px;
+        padding: 4px 0;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .warning-list li::before {
+        content: "•";
+        color: #dc2626;
+        font-size: 16px;
+        position: absolute;
+        left: 0;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .confirmation-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #374151;
+    }
+
+    .confirmation-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #dc2626;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        min-width: 160px;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .btn-delete:enabled {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .btn-delete:enabled:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        background: linear-gradient(135deg, #b91c1c, #991b1b);
+    }
+
+    .btn-delete:active {
+        transform: translateY(0);
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        color: #374151;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 160px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-cancel:hover {
+        background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 480px) {
+        .delete-card {
+            padding: 32px 24px;
+            margin: 20px;
+        }
+        
+        .button-group {
+            flex-direction: column;
+        }
+        
+        .btn-delete,
+        .btn-cancel {
+            width: 100%;
+        }
+    }
+
+    .loading {
+        display: none;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-account-container">
+    <div class="delete-card">
+        <div class="warning-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+        </div>
+        
+        <h2 class="delete-title">Delete Account</h2>
+        <p class="delete-subtitle">
+            This action is permanent and cannot be undone. Please review the consequences below.
+        </p>
+        
+        <div class="warning-box">
+            <div class="warning-title">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                What will be deleted:
+            </div>
+            <ul class="warning-list">
+                <li>Your profile and personal information</li>
+                <li>All your posts, comments, and content</li>
+                <li>Your followers and following connections</li>
+                <li>Account settings and preferences</li>
+                <li>Purchase history and saved items</li>
+            </ul>
+        </div>
+        
+        <form method="post" id="deleteForm">
+            {% csrf_token %}
+            <div class="form-container">
+                <label class="confirmation-checkbox">
+                    <input type="checkbox" id="confirmDelete" required>
+                    I understand this action is permanent and cannot be undone
+                </label>
+                
+                <div class="button-group">
+                    <a href="{% url 'profile' %}" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-delete" id="deleteButton" disabled>
+                        <span class="btn-text">Delete My Account</span>
+                        <span class="loading">
+                            <div class="spinner"></div>
+                            Deleting...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('confirmDelete');
+    const deleteButton = document.getElementById('deleteButton');
+    const deleteForm = document.getElementById('deleteForm');
+    
+    // Enable/disable delete button based on checkbox
+    checkbox.addEventListener('change', function() {
+        deleteButton.disabled = !this.checked;
+    });
+    
+    // Show loading state on form submission
+    deleteForm.addEventListener('submit', function(e) {
+        const btnText = deleteButton.querySelector('.btn-text');
+        const loading = deleteButton.querySelector('.loading');
+        
+        btnText.style.display = 'none';
+        loading.style.display = 'flex';
+        deleteButton.disabled = true;
+        
+        // Optional: Add a confirmation dialog
+        if (!confirm('Are you absolutely sure? This cannot be undone.')) {
+            e.preventDefault();
+            btnText.style.display = 'block';
+            loading.style.display = 'none';
+            deleteButton.disabled = false;
+        }
+    });
+});
+</script>
+{% endblock %}

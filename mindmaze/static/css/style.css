@@ -1,0 +1,24 @@
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #f5f7fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.profile-details, .progress-summary {
+    margin-bottom: 1.5rem;
+}
+.profile-actions a {
+    margin-right: 1rem;
+    text-decoration: none;
+    color: #3366cc;
+}
+
+.dashboard-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}

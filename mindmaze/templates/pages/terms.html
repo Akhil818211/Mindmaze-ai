@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms and Conditions – MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+  .terms-section {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #fdfbfb, #ebedee);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .terms-section .container {
+    max-width: 900px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    animation: fadeInUp 0.8s ease;
+  }
+
+  .section-title {
+    font-size: 32px;
+    text-align: center;
+    color: #3c3c6c;
+    margin-bottom: 10px;
+  }
+
+  .updated-date {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 30px;
+  }
+
+  .terms-content h2 {
+    margin-top: 30px;
+    font-size: 22px;
+    color: #444;
+  }
+
+  .terms-content p {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .terms-content a {
+    color: #667eea;
+    text-decoration: underline;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .terms-section .container {
+      padding: 30px 20px;
+    }
+
+    .section-title {
+      font-size: 26px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="terms-section">
+  <div class="container">
+    <h1 class="section-title">📜 Terms and Conditions</h1>
+    <p class="updated-date">Last updated: July 24, 2025</p>
+
+    <div class="terms-content">
+      <h2>1. Introduction</h2>
+      <p>By accessing and using MindMaze, you agree to these Terms and Conditions and our Privacy Policy. If you do not agree, please do not use the site.</p>
+
+      <h2>2. Use of the Platform</h2>
+      <p>You must be 13 years or older to use MindMaze. You agree to use the platform only for lawful purposes and in accordance with all applicable laws.</p>
+
+      <h2>3. User Accounts</h2>
+      <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+
+      <h2>4. Intellectual Property</h2>
+      <p>All content on MindMaze, including logos, exercises, games, and designs, are the intellectual property of MindMaze and protected by copyright laws.</p>
+
+      <h2>5. Termination</h2>
+      <p>We reserve the right to terminate or suspend your account at any time for violating these Terms or for any other reason deemed necessary.</p>
+
+      <h2>6. Limitation of Liability</h2>
+      <p>MindMaze is provided "as is". We are not responsible for any damages arising from use of the platform, including loss of data or personal outcomes.</p>
+
+      <h2>7. Modifications</h2>
+      <p>We may update these terms at any time. It’s your responsibility to check this page periodically. Continued use of the site indicates acceptance of any changes.</p>
+
+      <h2>8. Contact</h2>
+      <p>If you have any questions about these Terms, please <a href="{% url 'contact' %}">Contact Us</a>.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

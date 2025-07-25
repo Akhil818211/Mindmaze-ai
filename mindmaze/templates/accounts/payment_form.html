@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Premium – MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+    .premium-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        min-height: 80vh;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        padding: 50px 20px;
+        color: white;
+    }
+
+    .premium-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 40px 30px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .premium-card h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .premium-card p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .premium-card .price {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #ffd700;
+    }
+
+    .premium-card form input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .premium-card form input::placeholder {
+        color: #f0f0f0;
+    }
+
+    .premium-card button {
+        width: 100%;
+        padding: 12px;
+        background-color: #fff;
+        color: #764ba2;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .premium-card button:hover {
+        background: #f3f3f3;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(40px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="premium-section">
+    <div class="premium-card">
+        <h2>Upgrade to MindMaze Premium</h2>
+        <p>Unlock exclusive AI mental fitness challenges, deep-focus modes, and personalized tracking.</p>
+        <div class="price">₹499 / Lifetime</div>
+
+        <form action="{% url 'payment' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="number" name="amount" value="499" readonly>
+            <button type="submit">Upgrade Now</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

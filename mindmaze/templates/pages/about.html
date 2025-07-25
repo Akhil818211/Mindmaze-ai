@@ -1,0 +1,882 @@
+{% extends 'base.html' %}
+
+{% block title %}About - MindMaze{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page Wrapper */
+.page-wrapper {
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Three.js Background */
+.threejs-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b69 100%);
+    opacity: 0.95;
+}
+
+.threejs-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(79, 172, 254, 0.1), transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1), transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.1), transparent 50%);
+    animation: bgShift 10s ease-in-out infinite;
+}
+
+@keyframes bgShift {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(2deg); }
+}
+
+/* Floating Orbs */
+.floating-orbs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.3), rgba(255, 119, 198, 0.3));
+    backdrop-filter: blur(40px);
+    animation: float 8s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 200px;
+    height: 200px;
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+.orb-3 {
+    width: 120px;
+    height: 120px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 6s;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.6;
+    }
+    33% { 
+        transform: translateY(-30px) rotate(120deg);
+        opacity: 0.8;
+    }
+    66% { 
+        transform: translateY(15px) rotate(240deg);
+        opacity: 0.4;
+    }
+}
+
+/* Hero Section */
+.hero-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    border-radius: 50px;
+    color: #4facfe;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(20px);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px rgba(79, 172, 254, 0.3); }
+    to { box-shadow: 0 0 20px rgba(79, 172, 254, 0.6); }
+}
+
+.hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 0.9;
+    color: white;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #ffffff, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 3rem;
+}
+
+.hero-visual {
+    position: relative;
+    height: 500px;
+}
+
+.floating-cards {
+    position: relative;
+    height: 100%;
+}
+
+.floating-card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    animation: cardFloat 6s ease-in-out infinite;
+    max-width: 280px;
+}
+
+.card-1 {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.card-2 {
+    top: 40%;
+    right: 5%;
+    animation-delay: 2s;
+}
+
+.card-3 {
+    bottom: 10%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0px) rotateY(0deg); }
+    50% { transform: translateY(-20px) rotateY(5deg); }
+}
+
+/* Metrics Section */
+.metrics-section {
+    padding: 6rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+}
+
+.metrics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.metric-card {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
+}
+
+.metric-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Features Section */
+.features-section {
+    padding: 8rem 0;
+}
+
+.features-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.section-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ffffff, #4facfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4facfe, #00f2fe, #ff77c7);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(79, 172, 254, 0.2);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.feature-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+/* Team Section */
+.team-section {
+    padding: 8rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+}
+
+.team-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.team-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 auto 1.5rem;
+}
+
+.team-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.team-role {
+    font-size: 1rem;
+    color: #4facfe;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.team-bio {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 8rem 0;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(255, 119, 198, 0.1));
+    backdrop-filter: blur(20px);
+}
+
+.cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ffffff, #4facfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cta-description {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 3rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    min-width: 180px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(79, 172, 254, 0.6);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .floating-card {
+        position: static;
+        margin-bottom: 1rem;
+        max-width: none;
+    }
+    
+    .hero-visual {
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+    }
+    
+    .team-card {
+        padding: 2rem;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Scroll Animations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+
+.animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered Animation */
+.animate-stagger {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-stagger.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Three.js Background -->
+    <div class="threejs-bg" id="threejs-bg"></div>
+
+    <!-- Animated Gradient Orbs -->
+    <div class="floating-orbs">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-container">
+        <div class="hero-content">
+            <div>
+                <div class="hero-badge animate-on-scroll">
+                    <span>🚀</span>
+                    AI-Powered Mental Wellness Revolution
+                </div>
+
+                <h1 class="hero-title animate-on-scroll">
+                    Redefining<br>
+                    Mental<br>
+                    Wellness
+                </h1>
+
+                <p class="hero-description animate-on-scroll">
+                    Experience the future of mental health with MindMaze's revolutionary AI platform.
+                    We're not just another wellness app—we're your intelligent companion on the journey to mental clarity and cognitive excellence.
+                </p>
+            </div>
+
+            <div class="hero-visual">
+                <div class="floating-cards">
+                    <div class="floating-card card-1 animate-on-scroll">
+                        <h4 style="color: #00f5a0; margin-bottom: 0.8rem; font-size: 1.2rem;">Smart Analysis</h4>
+                        <p style="font-size: 1rem; margin: 0; opacity: 0.9;">AI understands your unique patterns</p>
+                    </div>
+                    <div class="floating-card card-2 animate-on-scroll">
+                        <h4 style="color: #8b5cf6; margin-bottom: 0.8rem; font-size: 1.2rem;">Personalized</h4>
+                        <p style="font-size: 1rem; margin: 0; opacity: 0.9;">Tailored precisely to your needs</p>
+                    </div>
+                    <div class="floating-card card-3 animate-on-scroll">
+                        <h4 style="color: #f471b5; margin-bottom: 0.8rem; font-size: 1.2rem;">24/7 Support</h4>
+                        <p style="font-size: 1rem; margin: 0; opacity: 0.9;">Always here when you need us most</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section class="metrics-section">
+        <div class="metrics-container">
+            <div class="metrics-grid">
+                <div class="metric-card animate-stagger">
+                    <span class="metric-number">1M+</span>
+                    <span class="metric-label">Lives Transformed</span>
+                </div>
+                <div class="metric-card animate-stagger">
+                    <span class="metric-number">95%</span>
+                    <span class="metric-label">Improvement Rate</span>
+                </div>
+                <div class="metric-card animate-stagger">
+                    <span class="metric-number">200+</span>
+                    <span class="metric-label">Global Locations</span>
+                </div>
+                <div class="metric-card animate-stagger">
+                    <span class="metric-number">24/7</span>
+                    <span class="metric-label">AI Availability</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title animate-on-scroll">Revolutionary Features</h2>
+                <p class="section-subtitle animate-on-scroll">
+                    Cutting-edge technology meets compassionate care in our comprehensive wellness ecosystem.
+                    Experience the next generation of mental health innovation.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">🧠</span>
+                    <h3 class="feature-title">Neuroadaptive AI</h3>
+                    <p class="feature-description">
+                        Our advanced neural networks adapt to your unique cognitive patterns,
+                        providing insights that evolve with your mental health journey and unlock your full potential.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Real-time Biofeedback</h3>
+                    <p class="feature-description">
+                        Instant physiological monitoring combined with AI analysis delivers
+                        immediate, actionable wellness recommendations tailored to your current state.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title">Precision Therapy</h3>
+                    <p class="feature-description">
+                        Micro-targeted interventions based on your specific mental health profile
+                        ensure maximum effectiveness with minimal time investment and maximum results.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">🌐</span>
+                    <h3 class="feature-title">Global Community</h3>
+                    <p class="feature-description">
+                        Connect with millions of users worldwide through our secure,
+                        AI-moderated support network that understands and protects your privacy absolutely.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Predictive Analytics</h3>
+                    <p class="feature-description">
+                        Anticipate mental health trends before they happen with our
+                        proprietary forecasting algorithms trained on millions of anonymized data points.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-stagger">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">Quantum Security</h3>
+                    <p class="feature-description">
+                        Military-grade encryption and quantum-resistant security protocols
+                        ensure your most sensitive data remains absolutely protected at all times.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="team-container">
+            <div class="section-header">
+                <h2 class="section-title animate-on-scroll">Visionary Team</h2>
+                <p class="section-subtitle animate-on-scroll">
+                    World-class experts in AI, neuroscience, and digital wellness leading the mental health revolution.
+                    Meet the minds behind the transformation.
+                </p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card animate-stagger">
+                    <div class="team-avatar">JD</div>
+                    <h3 class="team-name">Dr. Jamie Doe</h3>
+                    <p class="team-role">Chief AI Scientist</p>
+                    <p class="team-bio">
+                        Former Google DeepMind researcher specializing in therapeutic AI applications
+                        with 20+ published papers in Nature and Science. Pioneer in neuroadaptive algorithms.
+                    </p>
+                </div>
+
+                <div class="team-card animate-stagger">
+                    <div class="team-avatar">AL</div>
+                    <h3 class="team-name">Dr. Alex Liu</h3>
+                    <p class="team-role">Head of Neuroscience</p>
+                    <p class="team-bio">
+                        Harvard-trained neuroscientist and former NIH researcher pioneering
+                        brain-computer interfaces for mental health applications and cognitive enhancement.
+                    </p>
+                </div>
+
+                <div class="team-card animate-stagger">
+                    <div class="team-avatar">SH</div>
+                    <h3 class="team-name">Sam Harper</h3>
+                    <p class="team-role">VP of Product Innovation</p>
+                    <p class="team-bio">
+                        Award-winning designer from Apple with a passion for creating
+                        intuitive, life-changing user experiences in healthcare and wellness technology.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container animate-on-scroll">
+            <h2 class="cta-title">Ready to Transform Your Mind?</h2>
+            <p class="cta-description">
+                Join millions who've already discovered the power of AI-enhanced wellness.
+                Your journey to mental clarity and cognitive excellence starts with a single click.
+            </p>
+            <div class="cta-buttons">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn-primary">Start Free Trial</a>
+                    <a href="{% url 'login' %}" class="btn-secondary">Watch Demo</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}" class="btn-primary">Go to Dashboard</a>
+                    <a href="{% url 'profile' %}" class="btn-secondary">View Profile</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Intersection Observer for scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+        }
+    });
+}, observerOptions);
+
+// Staggered animations
+const staggerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const elements = entry.target.querySelectorAll('.animate-stagger');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('in-view');
+                }, index * 150);
+            });
+        }
+    });
+}, observerOptions);
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Observe scroll animations
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    animateElements.forEach(el => observer.observe(el));
+    
+    // Observe staggered sections
+    const staggerSections = document.querySelectorAll('.metrics-grid, .features-grid, .team-grid');
+    staggerSections.forEach(section => staggerObserver.observe(section));
+});
+
+// Parallax effect for background orbs
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const orbs = document.querySelectorAll('.gradient-orb');
+    
+    orbs.forEach((orb, index) => {
+        const speed = 0.5 + (index * 0.2);
+        orb.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+});
+
+// Interactive floating cards
+document.querySelectorAll('.floating-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-10px) scale(1.05)';
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0px) scale(1)';
+    });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Dynamic background animation
+const bgElement = document.getElementById('threejs-bg');
+let animationFrame;
+
+function animateBackground() {
+    const time = Date.now() * 0.001;
+    const intensity = 0.5 + Math.sin(time * 0.5) * 0.3;
+    
+    bgElement.style.filter = `brightness(${intensity}) saturate(${1 + intensity * 0.5})`;
+    animationFrame = requestAnimationFrame(animateBackground);
+}
+
+animateBackground();
+</script>
+{% endblock %}

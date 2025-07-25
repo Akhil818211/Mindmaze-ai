@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Your Progress</h2>
+  <ul>
+    {% for item in progress %}
+      <li>{{ item.game }} - Completed</li>
+    {% empty %}
+      <li>No progress yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
